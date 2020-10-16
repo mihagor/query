@@ -1,0 +1,7 @@
+@export on;
+@export set CsvIncludeColumnHeader=true;
+@export set CsvColumnDelimiter=";";
+@export set filename="C:\Users\Petrol\OneDrive - Petrol d.d., Ljubljana\izvozi\20200610_benchmark\izvoz_benchmark.csv";
+
+fetch first 1000000000 rows only;
+@export off;
