@@ -3,9 +3,10 @@ use database dwh_prod; use schema aplsdb;
 
 -- ############################################################## SALES ##############################################################
 with sales as (
+;
 select 
 --         *
-         f.accounting_date_sid,
+--         f.accounting_date_sid,
 --         f.gm_indicator,
 --         f.is_own_usage,
 --         mdm_company_code_addn                                  as company_code,
@@ -13,8 +14,10 @@ select
          pc.level03_code as pc_level03_code, pc.level03_name as pc_level03_name,
          pc.level04_code as pc_level04_code, pc.level04_name as pc_level04_name,
          pc.level05_code as pc_level05_code, pc.level05_name as pc_level05_name,
-         pc.level06_code as pc_level06_code, pc.level06_name as pc_level06_name,
-         pc.level07_code as pc_level07_code, pc.level07_name as pc_level07_name,
+--         pc.level06_code as pc_level06_code, pc.level06_name as pc_level06_name,
+--         pc.level07_code as pc_level07_code, pc.level07_name as pc_level07_name,
+--         pc.level08_code as pc_level08_code, pc.level08_name as pc_level08_name,
+
 --         case  when pc.hierarchy_ext_refr = 'PC|STD_SAP_PIS' and pc.level05_code in ('0P111')                  then pc.level05_code
 --               when pc.hierarchy_ext_refr = 'PC|STD_SAP_PIS'                                                   then 'N/A'                     
 --               when pc.hierarchy_ext_refr = 'PC|PIS' and pc.level03_code in ('4803', '6801', '3203', '6901')   then pc.level03_code
@@ -39,16 +42,16 @@ select
 --               end  as bs_name,                                                                                    
          pr.level01_code as pr_level01_code, pr.level01_name as pr_level01_name,
          pr.level02_code as pr_level02_code, pr.level02_name as pr_level02_name,
---         pr.level03_code as pr_level03_code, pr.level03_name as pr_level03_name,
---         pr.level04_code as pr_level04_code, pr.level04_name as pr_level04_name,
---         pr.level05_code as pr_level05_code, pr.level05_name as pr_level05_name,
+         pr.level03_code as pr_level03_code, pr.level03_name as pr_level03_name,
+         pr.level04_code as pr_level04_code, pr.level04_name as pr_level04_name,
+         pr.level05_code as pr_level05_code, pr.level05_name as pr_level05_name,
 --         pr.level06_code as pr_level06_code, pr.level06_name as pr_level06_name,
 --         pr.level07_code as pr_level07_code, pr.level07_name as pr_level07_name,
---         pr.product_code, pr.product_name_short,                                
+         pr.product_code, pr.product_name_short,                                
 --         sum(sales_line_qty)                                                                                as sales_line_qty,                      
---         sum(sales_line_qty_kg)                                                                             as sales_line_qty_kg,  
+         sum(sales_line_qty_kg)                                                                             as sales_line_qty_kg,  
 --         sum(sales_line_qty_l)                                                                              as sales_line_qty_l,                
---         sum(net_sales_line_amt)                                                                            as net_sales_line_amt,
+         sum(net_sales_line_amt)                                                                            as net_sales_line_amt,
          sum(net_margin_line_amt)                                                                           as net_margin_line_amt,        
 --         sum(net_sales_line_amt * exchange_rate_float)                                                      as net_sales_line_amt_eur,
 --         sum(net_margin_line_amt * exchange_rate_float)                                                     as net_margin_line_amt_eur,
@@ -69,13 +72,13 @@ from     f_sales_all_daily                   /*at (timestamp => to_timestamp_tz(
                                                                                                                                                                   and ex.exchange_rate_type_ext_refr = 'D'
                                                                                                                                                                   and ex.currency_to_ext_refr = 'EUR'
 where    1 = 1
-and      f.accounting_date_sid between 20200101 and 20201008
+and      f.accounting_date_sid between 20190101 and 20191299
 and      f.is_own_usage = 0
 and      f.gm_indicator = 1
 and      pr.level01_code <> ('06') 
 --and      pc.level03_code in ('4803')
 and      pc.level05_code in ('0P111')
-and      pr.level01_code in ('03')
+and      pr.level01_code in ('01')
 --and      pr.level02_code in ('0306')
 --and      pr.level03_code in ('030302')
 --and      pr.level04_code in ('030302009')
@@ -86,7 +89,7 @@ and      ((pc.hierarchy_ext_refr = 'PC|STD_SAP_PIS' and co.company_code in ('100
          (pc.hierarchy_ext_refr = 'PC|PIS' and co.company_code in ('812820', '812892', '812968', '812969')))
 
 group by
-         f.accounting_date_sid,
+--         f.accounting_date_sid,
 --         f.gm_indicator,
 --         f.is_own_usage,
 --         mdm_company_code_addn, 
@@ -94,8 +97,9 @@ group by
          pc.level03_code, pc.level03_name,
          pc.level04_code, pc.level04_name,
          pc.level05_code, pc.level05_name,
-         pc.level06_code, pc.level06_name,
-         pc.level07_code, pc.level07_name,   
+--         pc.level06_code, pc.level06_name,
+--         pc.level07_code, pc.level07_name,   
+--         pc.level08_code, pc.level08_name,         
 --         case    when pc.hierarchy_ext_refr = 'PC|STD_SAP_PIS' and pc.level05_code in ('0P111')                  then pc.level05_code
 --               when pc.hierarchy_ext_refr = 'PC|STD_SAP_PIS'                                                   then 'N/A'                     
 --               when pc.hierarchy_ext_refr = 'PC|PIS' and pc.level03_code in ('4803', '6801', '3203', '6901')   then pc.level03_code
@@ -120,15 +124,16 @@ group by
 --               end,                                                                                    
          pr.level01_code, pr.level01_name,
          pr.level02_code, pr.level02_name, 
---         pr.level03_code, pr.level03_name,
---         pr.level04_code, pr.level04_name,
---         pr.level05_code, pr.level05_name,
+         pr.level03_code, pr.level03_name,
+         pr.level04_code, pr.level04_name,
+         pr.level05_code, pr.level05_name,
 --         pr.level06_code, pr.level06_name,    
 --         pr.level07_code, pr.level07_name,                                
---         pr.product_code, pr.product_name_short,                      
+         pr.product_code, pr.product_name_short,                      
          1   
 
 order by 1, 2, 3, 4, 5, 6, 7, 8, 9
+;
 
 -- ############################################################## PLAN ###################################################################
 ), plan as (
